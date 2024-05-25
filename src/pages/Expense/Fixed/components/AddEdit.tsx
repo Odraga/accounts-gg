@@ -8,8 +8,8 @@ import { FixedExpenseI } from "../../../../interface/db/FixedExpenseI";
 
 interface AddEditI {
   show: boolean;
-  selected: object;
-  toggleModal: (value: string) => void;
+  selected: FixedExpenseI | undefined;
+  toggleModal: (value: boolean) => void;
 }
 
 const validationSchema = yup.object({
@@ -28,20 +28,22 @@ const AddEdit: FC<AddEditI> = ({ show, selected, toggleModal }) => {
 
       const id = await db.fixedExpense.add(obj);
 
-      toggleModal(null);
-
       console.log(id);
+
+      toggleModal(false);
     } catch (error) {
       console.error(error);
     }
   };
 
   const formik = useFormik({
-    initialValues: {
-      id: 0,
-      title: "",
-      amount: 0,
-    },
+    initialValues: selected
+      ? selected
+      : {
+          id: 0,
+          title: "",
+          amount: 0,
+        },
     validationSchema: validationSchema,
     onSubmit: handleSubmit,
   });
