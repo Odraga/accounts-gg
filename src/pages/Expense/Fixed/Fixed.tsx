@@ -1,9 +1,8 @@
-import React, { FC, useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import Table from "../../../components/Table/Table";
 import { FixedExpenseI } from "../../../interface/db/FixedExpenseI";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import Modal from "../../../components/Modal/Modal";
 import AddEdit from "./components/AddEdit";
 import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "../../../db/db";
@@ -13,15 +12,15 @@ interface FixedI {}
 const Fixed: FC<FixedI> = () => {
   const [tableHead] = useState(["Id", "Title", "Amount"]);
   const [tableData, setTableData] = useState<FixedExpenseI[]>([]);
-  const [selected, setSelected] = useState<object>();
+  const [selected, setSelected] = useState<FixedExpenseI>();
 
   const [showAddEdit, setShowAddEdit] = useState(false);
 
-  const toggleModal = (value: string) => {
+  const toggleModal = (status: boolean) => {
     setShowAddEdit(!showAddEdit);
 
-    if (value === null) {
-      setSelected({});
+    if (!status) {
+      setSelected(undefined);
     }
   };
 
