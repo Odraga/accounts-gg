@@ -8,8 +8,8 @@ import { FixedExpenseI } from "../../../../interface/db/FixedExpenseI";
 
 interface AddEditI {
   show: boolean;
-  selected: object;
-  toggleModal: (value: string) => void;
+  selected: FixedExpenseI | undefined;
+  toggleModal: (value: boolean) => void;
 }
 
 const validationSchema = yup.object({
@@ -24,24 +24,29 @@ const AddEdit: FC<AddEditI> = ({ show, selected, toggleModal }) => {
   const handleSubmit = async (obj: FixedExpenseI) => {
     try {
       console.log(obj);
+
       obj.id = uuidv4();
 
-      const id = await db.fixedExpense.add(obj);
-
-      toggleModal(null);
+      const id = selected
+        ? await db.fixedExpense.update(selected.id, obj)
+        : await db.fixedExpense.add(obj);
 
       console.log(id);
+
+      toggleModal(false);
     } catch (error) {
       console.error(error);
     }
   };
 
   const formik = useFormik({
-    initialValues: {
-      id: 0,
-      title: "",
-      amount: 0,
-    },
+    initialValues: selected
+      ? selected
+      : {
+          id: 0,
+          title: "",
+          amount: 0,
+        },
     validationSchema: validationSchema,
     onSubmit: handleSubmit,
   });
@@ -82,7 +87,7 @@ const AddEdit: FC<AddEditI> = ({ show, selected, toggleModal }) => {
             </div>
           </div>
         </div>
-        <ModalAction hide={toggleModal}>
+        <ModalAction hide={() => toggleModal(true)}>
           <button type="submit" className="btn btn-success text-white">
             Save
           </button>

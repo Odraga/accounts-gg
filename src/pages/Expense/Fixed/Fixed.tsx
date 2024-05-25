@@ -1,9 +1,8 @@
-import React, { FC, useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import Table from "../../../components/Table/Table";
 import { FixedExpenseI } from "../../../interface/db/FixedExpenseI";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import Modal from "../../../components/Modal/Modal";
 import AddEdit from "./components/AddEdit";
 import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "../../../db/db";
@@ -13,25 +12,35 @@ interface FixedI {}
 const Fixed: FC<FixedI> = () => {
   const [tableHead] = useState(["Id", "Title", "Amount"]);
   const [tableData, setTableData] = useState<FixedExpenseI[]>([]);
-  const [selected, setSelected] = useState<object>();
+  const [selected, setSelected] = useState<FixedExpenseI>();
 
   const [showAddEdit, setShowAddEdit] = useState(false);
 
-  const toggleModal = (value: string) => {
+  const toggleModal = (status: boolean) => {
     setShowAddEdit(!showAddEdit);
 
-    if (value === null) {
-      setSelected({});
+    if (!status) {
+      setSelected(undefined);
+    }
+  };
+
+  const cleanSelected = () => {
+    if (selected !== undefined) {
+      toggleModal(true);
+    }
+  };
+
+  const updateTableData = () => {
+    if (requestData) {
+      setTableData(requestData);
     }
   };
 
   const requestData = useLiveQuery(() => db.fixedExpense.toArray(), []);
 
   useEffect(() => {
-    console.log(selected);
-    if (requestData) {
-      setTableData(requestData);
-    }
+    updateTableData();
+    cleanSelected();
   }, [requestData, selected]);
 
   return (
@@ -43,13 +52,17 @@ const Fixed: FC<FixedI> = () => {
           selected={selected}
         />
       ) : null}
+
       <div className="flex flex-col mx-6 mt-2">
         <div className="flex justify-between mb-3 mx-4">
           <div>
             <span className="text-xl">Expense / Fixed</span>
           </div>
           <div>
-            <button className="btn btn-info btn-sm" onClick={toggleModal}>
+            <button
+              className="btn btn-info btn-sm"
+              onClick={() => toggleModal(true)}
+            >
               <FontAwesomeIcon icon={faPlus} />
             </button>
           </div>
@@ -59,6 +72,7 @@ const Fixed: FC<FixedI> = () => {
             tableHead={tableHead}
             tableData={tableData}
             setSelected={setSelected}
+            tableDelete={"fixedExpense"}
             /* typeTable="table-zebra" */
           />
         </div>
