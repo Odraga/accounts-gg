@@ -6,6 +6,7 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import AddEdit from "./components/AddEdit";
 import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "../../../db/db";
+import { confirmAlert } from "react-confirm-alert";
 
 interface FixedI {}
 
@@ -24,13 +25,46 @@ const Fixed: FC<FixedI> = () => {
     }
   };
 
-  const requestData = useLiveQuery(() => db.fixedExpense.toArray(), []);
+  const cleanSelected = () => {
+    if (selected !== undefined) {
+      toggleModal(true);
+    }
+  };
 
-  useEffect(() => {
-    console.log(selected);
+  const updateTableData = () => {
     if (requestData) {
       setTableData(requestData);
     }
+  };
+
+  const deleteConfirm = async (id: string | number) => {
+    console.log(id);
+    /* confirmAlert({
+      closeOnClickOutside: false,
+      message: "Are you sure you want to delete this record?",
+      buttons: [
+        {
+          label: "Yes",
+          onClick: async () => {
+            try {
+              await db.fixedExpense.delete(selected.id);
+            } catch (error) {
+              console.error(error);
+            }
+          },
+        },
+        {
+          label: "No",
+        },
+      ],
+    }); */
+  };
+
+  const requestData = useLiveQuery(() => db.fixedExpense.toArray(), []);
+
+  useEffect(() => {
+    updateTableData();
+    cleanSelected();
   }, [requestData, selected]);
 
   return (
@@ -42,13 +76,17 @@ const Fixed: FC<FixedI> = () => {
           selected={selected}
         />
       ) : null}
+
       <div className="flex flex-col mx-6 mt-2">
         <div className="flex justify-between mb-3 mx-4">
           <div>
             <span className="text-xl">Expense / Fixed</span>
           </div>
           <div>
-            <button className="btn btn-info btn-sm" onClick={toggleModal}>
+            <button
+              className="btn btn-info btn-sm"
+              onClick={() => toggleModal(true)}
+            >
               <FontAwesomeIcon icon={faPlus} />
             </button>
           </div>
@@ -58,6 +96,7 @@ const Fixed: FC<FixedI> = () => {
             tableHead={tableHead}
             tableData={tableData}
             setSelected={setSelected}
+            delete={deleteConfirm}
             /* typeTable="table-zebra" */
           />
         </div>

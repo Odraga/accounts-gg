@@ -1,10 +1,15 @@
-import React, { Dispatch, FC, SetStateAction } from "react";
+import { Dispatch, FC, SetStateAction } from "react";
+
+interface TableDataI {
+  [key: string]: string | number;
+}
 
 interface TableI {
   tableHead: string[];
-  tableData: object[];
+  tableData: TableDataI[];
   typeTable?: string;
-  setSelected: Dispatch<SetStateAction<object>>;
+  setSelected: Dispatch<SetStateAction<TableDataI>> | any;
+  deleteSelected: (value: string | number) => void;
 }
 
 const Table: FC<TableI> = ({
@@ -12,6 +17,7 @@ const Table: FC<TableI> = ({
   tableData = [],
   typeTable = null,
   setSelected,
+  deleteSelected,
 }) => {
   return (
     <div className="overflow-x-auto">
@@ -23,11 +29,12 @@ const Table: FC<TableI> = ({
                 {item}
               </th>
             ))}
+            <th className="w-24"></th>
           </tr>
         </thead>
         <tbody>
           {tableData && tableData.length > 0 ? (
-            tableData.map((data: object, rowIndex: number) => {
+            tableData.map((data: TableDataI, rowIndex: number) => {
               return (
                 <tr
                   key={rowIndex}
@@ -35,16 +42,25 @@ const Table: FC<TableI> = ({
                   onClick={() => setSelected(data)}
                 >
                   {Object.keys(data).map((key: string, cellIndex: number) => (
-                    <td key={cellIndex} /*  colSpan={key === "id" ? 5 : 1} */>
+                    <td key={cellIndex}>
                       {key === "id" ? rowIndex + 1 : data[key]}
                     </td>
                   ))}
+                  <td>
+                    <button
+                      className="btn btn-link"
+                      type="button"
+                      onClick={() => deleteSelected(data["id"])}
+                    >
+                      delete
+                    </button>
+                  </td>
                 </tr>
               );
             })
           ) : (
             <tr>
-              <td className="text-center" colSpan={12}>
+              <td className="text-center" colSpan={tableHead.length + 1}>
                 No data :)
               </td>
             </tr>

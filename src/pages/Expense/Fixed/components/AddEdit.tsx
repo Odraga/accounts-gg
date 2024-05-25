@@ -24,9 +24,12 @@ const AddEdit: FC<AddEditI> = ({ show, selected, toggleModal }) => {
   const handleSubmit = async (obj: FixedExpenseI) => {
     try {
       console.log(obj);
+
       obj.id = uuidv4();
 
-      const id = await db.fixedExpense.add(obj);
+      const id = selected
+        ? await db.fixedExpense.update(selected.id, obj)
+        : await db.fixedExpense.add(obj);
 
       console.log(id);
 
