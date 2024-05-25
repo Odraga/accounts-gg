@@ -87,7 +87,7 @@ const AddEdit: FC<AddEditI> = ({ show, selected, toggleModal }) => {
             </div>
           </div>
         </div>
-        <ModalAction hide={toggleModal}>
+        <ModalAction hide={() => toggleModal(true)}>
           <button type="submit" className="btn btn-success text-white">
             Save
           </button>

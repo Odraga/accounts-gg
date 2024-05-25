@@ -6,7 +6,6 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import AddEdit from "./components/AddEdit";
 import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "../../../db/db";
-import { confirmAlert } from "react-confirm-alert";
 
 interface FixedI {}
 
@@ -35,29 +34,6 @@ const Fixed: FC<FixedI> = () => {
     if (requestData) {
       setTableData(requestData);
     }
-  };
-
-  const deleteConfirm = async (id: string | number) => {
-    console.log(id);
-    /* confirmAlert({
-      closeOnClickOutside: false,
-      message: "Are you sure you want to delete this record?",
-      buttons: [
-        {
-          label: "Yes",
-          onClick: async () => {
-            try {
-              await db.fixedExpense.delete(selected.id);
-            } catch (error) {
-              console.error(error);
-            }
-          },
-        },
-        {
-          label: "No",
-        },
-      ],
-    }); */
   };
 
   const requestData = useLiveQuery(() => db.fixedExpense.toArray(), []);
@@ -96,7 +72,7 @@ const Fixed: FC<FixedI> = () => {
             tableHead={tableHead}
             tableData={tableData}
             setSelected={setSelected}
-            delete={deleteConfirm}
+            tableDelete={"fixedExpense"}
             /* typeTable="table-zebra" */
           />
         </div>
