@@ -69,7 +69,7 @@ const Table: FC<TableI> = ({
                 >
                   {Object.keys(data).map((key: string, cellIndex: number) => (
                     <td key={cellIndex}>
-                      {key === "id" ? rowIndex + 1 : data[key]}
+                      {key === "id" ? rowIndex + 1 : data[key].toString()}
                     </td>
                   ))}
                   <td>
