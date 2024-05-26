@@ -3,36 +3,32 @@ import Modal, { ModalAction } from "../../../../components/Modal/Modal";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { v4 as uuidv4 } from "uuid";
-import { db } from "../../../../db/db";
-import { ExtraExpenseI } from "../../../../interface/db/ExtraExpenseI";
-import moment from "moment";
 
-interface AddEditI {
-  show: boolean;
-  selected: ExtraExpenseI | undefined;
-  toggleModal: (value: boolean) => void;
-}
+import { FixedIncomeI } from "../../../../interface/db/FixedIncomeI";
+import { db } from "../../../../db/db";
 
 const validationSchema = yup.object({
-  title: yup.string().required("Campo requerido"),
-  description: yup.string().required("Campo requerido"),
+  origin: yup.string().required("Campo requerido"),
   amount: yup
     .number()
     .required("Campo requerido")
     .min(0, "El monto no puede ser menor a 0"),
 });
 
-const AddEdit: FC<AddEditI> = ({ show, selected, toggleModal }) => {
-  const handleSubmit = async (obj: ExtraExpenseI) => {
-    try {
-      console.log(obj);
+interface AddEditI {
+  show: boolean;
+  selected: FixedIncomeI | undefined;
+  toggleModal: (value: boolean) => void;
+}
 
+const AddEdit: FC<AddEditI> = ({ show, selected, toggleModal }) => {
+  const handleSubmit = async (obj: FixedIncomeI) => {
+    try {
       obj.id = uuidv4();
-      obj.creationDate = moment(new Date()).format("DD/MM/YYYY");
 
       const id = selected
-        ? await db.extraExpense.update(selected.id, obj)
-        : await db.extraExpense.add(obj);
+        ? await db.fixedIncome.update(selected.id, obj)
+        : await db.fixedIncome.add(obj);
 
       console.log(id);
 
@@ -47,10 +43,8 @@ const AddEdit: FC<AddEditI> = ({ show, selected, toggleModal }) => {
       ? selected
       : {
           id: 0,
-          title: "",
-          description: "",
+          origin: "",
           amount: 0,
-          creationDate: "",
         },
     validationSchema: validationSchema,
     onSubmit: handleSubmit,
@@ -62,35 +56,17 @@ const AddEdit: FC<AddEditI> = ({ show, selected, toggleModal }) => {
           <div className="grid grid-rows-2">
             <div>
               <input
-                name="title"
+                name="origin"
                 type="text"
-                placeholder="Title"
+                placeholder="Origin"
                 className="input input-bordered w-full max-w-xs"
-                value={formik.values.title}
+                value={formik.values.origin}
                 onChange={formik.handleChange}
               />
-              {formik.errors.title ? (
-                <div className="text-red-500 text-sm">
-                  {formik.errors.title}
-                </div>
-              ) : null}
             </div>
-
-            <div className="mt-0">
-              <textarea
-                name="description"
-                placeholder="Description"
-                className="textarea textarea-bordered w-full max-w-xs"
-                value={formik.values.description}
-                onChange={formik.handleChange}
-              ></textarea>
-
-              {formik.errors.description ? (
-                <div className="text-red-500 text-sm">
-                  {formik.errors.description}
-                </div>
-              ) : null}
-            </div>
+            {formik.errors.origin ? (
+              <div className="text-red-500 text-sm">{formik.errors.origin}</div>
+            ) : null}
             <div className="mt-2">
               <input
                 name="amount"

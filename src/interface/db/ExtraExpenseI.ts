@@ -3,5 +3,6 @@ export interface ExtraExpenseI {
   title: string;
   description: string;
   amount: number;
-  creationDate: Date;
+  creationDate: string;
+  [key: string]: string | number;
 }

@@ -1,6 +1,6 @@
 export interface FixedIncomeI {
   id: number;
-  company: string;
+  origin: string;
   amount: number;
-  status: boolean;
+  [key: string]: string | number;
 }

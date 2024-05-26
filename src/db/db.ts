@@ -13,18 +13,18 @@ export class MySubClassedDexie extends Dexie {
   extraExpense!: Table<ExtraExpenseI>;
   extraIncome!: Table<ExtraIncomeI>;
   fixedExpense!: Table<FixedExpenseI>;
-  salary!: Table<FixedIncomeI>;
+  fixedIncome!: Table<FixedIncomeI>;
 
   constructor() {
     super("myDatabase");
 
-    this.version(4).stores({
+    this.version(5).stores({
       currentBalance: "++id, currentMonth, totalIncome, totalExpense",
       debt: "++id, name, startQuota, endQuota, paid, payable",
       extraExpense: "++id, title, description, amount, creationDate",
-      extraIncome: "++id, title, description, amount, creationDate",
+      extraIncome: "++id, origin, description, amount, creationDate",
       fixedExpense: "++id, title, amount",
-      fixedIncomeI: "++id, company, amount, status",
+      fixedIncome: "++id, origin, amount",
     });
   }
 }

@@ -3,5 +3,5 @@ export interface ExtraIncomeI {
   title: string;
   description: string;
   amount: number;
-  creationDate: Date;
+  creationDate: string;
 }
